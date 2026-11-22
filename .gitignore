@@ -2,3 +2,6 @@ node_modules
 dist
 .superpowers
 *.log
+public/feeds.json
+.DS_Store
+*.local

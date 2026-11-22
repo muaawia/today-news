@@ -1,0 +1,248 @@
+[
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+  "category": "world",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/politics/rss.xml",
+  "category": "politics",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/sport/rss.xml",
+  "category": "sport",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+  "category": "science",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/technology/rss.xml",
+  "category": "tech",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+  "category": "business",
+  "country": "UK"
+ },
+ {
+  "name": "BBC News",
+  "url": "https://feeds.bbci.co.uk/news/health/rss.xml",
+  "category": "health",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/world/rss",
+  "category": "world",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/politics/rss",
+  "category": "politics",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/sport/rss",
+  "category": "sport",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/science/rss",
+  "category": "science",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/technology/rss",
+  "category": "tech",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/business/rss",
+  "category": "business",
+  "country": "UK"
+ },
+ {
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com/lifeandstyle/health-and-wellbeing/rss",
+  "category": "health",
+  "country": "UK"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+  "category": "world",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
+  "category": "politics",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml",
+  "category": "sport",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+  "category": "science",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+  "category": "tech",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+  "category": "business",
+  "country": "US"
+ },
+ {
+  "name": "The New York Times",
+  "url": "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
+  "category": "health",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1004/rss.xml",
+  "category": "world",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1014/rss.xml",
+  "category": "politics",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1007/rss.xml",
+  "category": "science",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1019/rss.xml",
+  "category": "tech",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1006/rss.xml",
+  "category": "business",
+  "country": "US"
+ },
+ {
+  "name": "NPR",
+  "url": "https://feeds.npr.org/1128/rss.xml",
+  "category": "health",
+  "country": "US"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-world",
+  "category": "world",
+  "country": "Canada"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-politics",
+  "category": "politics",
+  "country": "Canada"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-sports",
+  "category": "sport",
+  "country": "Canada"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-technology",
+  "category": "tech",
+  "country": "Canada"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-business",
+  "category": "business",
+  "country": "Canada"
+ },
+ {
+  "name": "CBC News",
+  "url": "https://www.cbc.ca/webfeed/rss/rss-health",
+  "category": "health",
+  "country": "Canada"
+ },
+ {
+  "name": "Al Jazeera",
+  "url": "https://www.aljazeera.com/xml/rss/all.xml",
+  "category": "world",
+  "country": "Qatar"
+ },
+ {
+  "name": "DW",
+  "url": "https://rss.dw.com/rdf/rss-en-all",
+  "category": "world",
+  "country": "Germany"
+ },
+ {
+  "name": "France 24",
+  "url": "https://www.france24.com/en/rss",
+  "category": "world",
+  "country": "France"
+ },
+ {
+  "name": "The Hindu",
+  "url": "https://www.thehindu.com/news/international/feeder/default.rss",
+  "category": "world",
+  "country": "India"
+ },
+ {
+  "name": "The Hindu",
+  "url": "https://www.thehindu.com/sport/feeder/default.rss",
+  "category": "sport",
+  "country": "India"
+ },
+ {
+  "name": "The Hindu",
+  "url": "https://www.thehindu.com/business/feeder/default.rss",
+  "category": "business",
+  "country": "India"
+ },
+ {
+  "name": "ABC News Australia",
+  "url": "https://www.abc.net.au/news/feed/51120/rss.xml",
+  "category": "world",
+  "country": "Australia"
+ },
+ {
+  "name": "The Japan Times",
+  "url": "https://www.japantimes.co.jp/feed/",
+  "category": "world",
+  "country": "Japan"
+ }
+]
