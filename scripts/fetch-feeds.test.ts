@@ -57,6 +57,13 @@ describe('fetchAll', () => {
     expect(out.map((a) => a.source)).toEqual(['Good'])
   })
 
+  test('rejects when every feed fails so a bad run never publishes an empty feed', async () => {
+    const fetcher = async (): Promise<RawItem[]> => {
+      throw new Error('network down')
+    }
+    await expect(fetchAll([src, { ...src, url: 'http://y' }], fetcher)).rejects.toThrow(/all feeds failed/i)
+  })
+
   test('returns newest first', async () => {
     const fetcher = async (): Promise<RawItem[]> => [
       { title: 'old', link: 'http://o', isoDate: '2026-11-20T10:00:00Z' },

@@ -67,17 +67,20 @@ const parser = new Parser<object, RawItem>({
 const defaultFetcher: Fetcher = async (url) => (await parser.parseURL(url)).items
 
 export async function fetchAll(sources: Source[], fetcher: Fetcher = defaultFetcher): Promise<Article[]> {
+  let failures = 0
   const results = await Promise.all(
     sources.map(async (src) => {
       try {
         const items = await fetcher(src.url)
         return items.filter((i) => i.link && i.title).map((i) => normalizeItem(i, src))
       } catch (err) {
+        failures++
         console.warn(`skipped ${src.name} (${src.category}): ${(err as Error).message}`)
         return []
       }
     }),
   )
+  if (sources.length > 0 && failures === sources.length) throw new Error('All feeds failed')
   return dedupe(results.flat()).sort((a, b) => b.published.localeCompare(a.published))
 }
 
