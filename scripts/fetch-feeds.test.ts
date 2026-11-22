@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { dedupe, fetchAll, normalizeItem, type RawItem, type Source } from './fetch-feeds'
 import type { Article } from '../src/lib/types'
 
+const NOW = new Date('2026-11-21T12:00:00Z')
 const src: Source = { name: 'BBC', url: 'http://x/rss', category: 'world', country: 'UK' }
 
 describe('normalizeItem', () => {
@@ -33,6 +34,21 @@ describe('normalizeItem', () => {
   })
 })
 
+describe('normalizeItem image choice', () => {
+  test('picks the widest media:content when a feed offers several sizes', () => {
+    const a = normalizeItem(
+      {
+        title: 'T',
+        link: 'http://a/4',
+        isoDate: '2026-11-21T10:00:00Z',
+        mediaContent: [{ $: { url: 'http://img/small.jpg', width: '140' } }, { $: { url: 'http://img/big.jpg', width: '1000' } }],
+      },
+      src,
+    )
+    expect(a.image).toBe('http://img/big.jpg')
+  })
+})
+
 describe('dedupe', () => {
   test('keeps one article per link', () => {
     const base = { title: 't', snippet: '', source: 's', country: 'UK', category: 'world', published: '' } as const
@@ -53,7 +69,7 @@ describe('fetchAll', () => {
       if (url === 'http://bad') throw new Error('timeout')
       return [{ title: 'ok', link: 'http://ok/1', isoDate: '2026-11-21T10:00:00Z' }]
     }
-    const out = await fetchAll([bad, good], fetcher)
+    const out = await fetchAll([bad, good], fetcher, NOW)
     expect(out.map((a) => a.source)).toEqual(['Good'])
   })
 
@@ -64,12 +80,31 @@ describe('fetchAll', () => {
     await expect(fetchAll([src, { ...src, url: 'http://y' }], fetcher)).rejects.toThrow(/all feeds failed/i)
   })
 
+  test('drops items older than 7 days', async () => {
+    const fetcher = async (): Promise<RawItem[]> => [
+      { title: 'fresh', link: 'http://f', isoDate: '2026-11-20T10:00:00Z' },
+      { title: 'ancient', link: 'http://a', isoDate: '2026-11-10T10:00:00Z' },
+    ]
+    const out = await fetchAll([src], fetcher, NOW)
+    expect(out.map((a) => a.title)).toEqual(['fresh'])
+  })
+
+  test('drops BBC iPlayer and Sounds programme pages that are not news articles', async () => {
+    const fetcher = async (): Promise<RawItem[]> => [
+      { title: 'Tech Now', link: 'https://www.bbc.co.uk/iplayer/episode/p0abc', isoDate: '2026-11-21T10:00:00Z' },
+      { title: 'Inside Health', link: 'https://www.bbc.co.uk/sounds/play/p0def', isoDate: '2026-11-21T10:00:00Z' },
+      { title: 'Real news', link: 'https://www.bbc.co.uk/news/articles/c1', isoDate: '2026-11-21T10:00:00Z' },
+    ]
+    const out = await fetchAll([src], fetcher, NOW)
+    expect(out.map((a) => a.title)).toEqual(['Real news'])
+  })
+
   test('returns newest first', async () => {
     const fetcher = async (): Promise<RawItem[]> => [
       { title: 'old', link: 'http://o', isoDate: '2026-11-20T10:00:00Z' },
       { title: 'new', link: 'http://n', isoDate: '2026-11-21T10:00:00Z' },
     ]
-    const out = await fetchAll([src], fetcher)
+    const out = await fetchAll([src], fetcher, NOW)
     expect(out.map((a) => a.title)).toEqual(['new', 'old'])
   })
 })

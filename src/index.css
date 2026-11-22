@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark light;
+  color-scheme: dark;
   --bg: #0a0a0c;
   --surface: #15151a;
   --text: #f3efe6;
@@ -15,16 +15,6 @@
   --c-tech: #2fb5c9;
   --c-business: #e0a43c;
   --c-health: #e5799b;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f7f4ee;
-    --surface: #ffffff;
-    --text: #16140f;
-    --muted: #6f6b62;
-    --line: rgba(0, 0, 0, 0.09);
-  }
 }
 
 * {

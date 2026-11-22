@@ -35,6 +35,18 @@ jobs:
         with:
           path: dist
 
+  # GitHub disables scheduled workflows after 60 days without repo activity.
+  # Re-enabling the workflow on each scheduled run is intended to reset that counter (unverified).
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/deploy.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

@@ -29,8 +29,9 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.endsWith('/feeds.json'),
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'feeds' },
+            // fresh when online, cached copy when offline or the network is slow
+            handler: 'NetworkFirst',
+            options: { cacheName: 'feeds', networkTimeoutSeconds: 3 },
           },
         ],
       },

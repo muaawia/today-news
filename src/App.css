@@ -4,6 +4,16 @@
   padding-bottom: calc(48px + env(safe-area-inset-bottom));
 }
 
+/* opaque strip behind the status bar so scrolled content never shows under the clock */
+.app::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top);
+  background: var(--bg);
+  z-index: 11;
+}
+
 /* header */
 header {
   padding: calc(28px + env(safe-area-inset-top)) 20px 10px;
@@ -32,7 +42,7 @@ h1 {
 /* filters */
 .filters {
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top);
   z-index: 10;
   padding: 10px 0 12px;
   background: color-mix(in srgb, var(--bg) 82%, transparent);

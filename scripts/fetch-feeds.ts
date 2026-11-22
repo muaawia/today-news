@@ -19,13 +19,27 @@ export interface RawItem {
   content?: string
   summary?: string
   enclosure?: { url?: string }
-  mediaContent?: { $?: { url?: string } }
+  mediaContent?: { $?: { url?: string; width?: string } }[]
   mediaThumbnail?: { $?: { url?: string } }
 }
 
 export type Fetcher = (url: string) => Promise<RawItem[]>
 
 const SNIPPET_MAX = 200
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
+const NOT_NEWS = /\/(iplayer|sounds)\//
+
+// feeds like The Guardian list several sizes of the same photo; take the widest
+function widestImage(items: RawItem['mediaContent']): string | undefined {
+  let best: { url: string; width: number } | undefined
+  for (const m of items ?? []) {
+    const url = m.$?.url
+    if (!url) continue
+    const width = Number(m.$?.width ?? 0)
+    if (!best || width > best.width) best = { url, width }
+  }
+  return best?.url
+}
 
 function toSnippet(raw: string): string {
   const text = raw
@@ -45,7 +59,7 @@ export function normalizeItem(item: RawItem, src: Source): Article {
     id: createHash('sha1').update(link).digest('hex').slice(0, 12),
     title: (item.title ?? '').trim(),
     link,
-    image: item.enclosure?.url ?? item.mediaContent?.$?.url ?? item.mediaThumbnail?.$?.url,
+    image: widestImage(item.mediaContent) ?? item.enclosure?.url ?? item.mediaThumbnail?.$?.url,
     snippet: toSnippet(item.contentSnippet ?? item.content ?? item.summary ?? ''),
     source: src.name,
     country: src.country,
@@ -61,12 +75,16 @@ export function dedupe(articles: Article[]): Article[] {
 
 const parser = new Parser<object, RawItem>({
   timeout: 10_000,
-  customFields: { item: [['media:content', 'mediaContent'], ['media:thumbnail', 'mediaThumbnail']] },
+  customFields: { item: [['media:content', 'mediaContent', { keepArray: true }], ['media:thumbnail', 'mediaThumbnail']] },
 })
 
 const defaultFetcher: Fetcher = async (url) => (await parser.parseURL(url)).items
 
-export async function fetchAll(sources: Source[], fetcher: Fetcher = defaultFetcher): Promise<Article[]> {
+export async function fetchAll(
+  sources: Source[],
+  fetcher: Fetcher = defaultFetcher,
+  now: Date = new Date(),
+): Promise<Article[]> {
   let failures = 0
   const results = await Promise.all(
     sources.map(async (src) => {
@@ -81,7 +99,10 @@ export async function fetchAll(sources: Source[], fetcher: Fetcher = defaultFetc
     }),
   )
   if (sources.length > 0 && failures === sources.length) throw new Error('All feeds failed')
-  return dedupe(results.flat()).sort((a, b) => b.published.localeCompare(a.published))
+  const recent = results
+    .flat()
+    .filter((a) => !NOT_NEWS.test(a.link) && Date.parse(a.published) >= now.getTime() - MAX_AGE_MS)
+  return dedupe(recent).sort((a, b) => b.published.localeCompare(a.published))
 }
 
 async function main() {

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import App from './App'
@@ -11,15 +11,20 @@ const articles: Article[] = [
   { ...base, id: '3', title: 'New comet spotted', category: 'science', country: 'UK', published: '2026-11-21T09:00:00Z', link: 'http://x/3' },
 ]
 
-function stubFeed(ok: boolean) {
+function stubFeed(ok: boolean, list: Article[] = articles, generatedAt = '2026-11-21T12:00:00Z') {
   vi.stubGlobal(
     'fetch',
     vi.fn(async () =>
       ok
-        ? ({ ok: true, json: async () => ({ generatedAt: '2026-11-21T12:00:00Z', articles }) } as Response)
+        ? ({ ok: true, json: async () => ({ generatedAt, articles: list }) } as Response)
         : Promise.reject(new Error('offline')),
     ),
   )
+}
+
+function backToForeground() {
+  Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true })
+  document.dispatchEvent(new Event('visibilitychange'))
 }
 
 beforeEach(() => stubFeed(true))
@@ -60,6 +65,36 @@ describe('App', () => {
     render(<App />)
     await screen.findByText('New comet spotted')
     expect(screen.getAllByTestId('image-fallback')).toHaveLength(1)
+  })
+
+  test('refetches (bypassing the HTTP cache) when the app returns to the foreground and the feed is stale', async () => {
+    stubFeed(true, articles, '2020-01-01T00:00:00Z')
+    render(<App />)
+    await screen.findByText('Derby ends in draw')
+    expect(fetch).toHaveBeenCalledTimes(1)
+    backToForeground()
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('feeds.json'), { cache: 'no-cache' })
+  })
+
+  test('does not refetch on foreground when the feed is fresh', async () => {
+    stubFeed(true, articles, new Date().toISOString())
+    render(<App />)
+    await screen.findByText('Derby ends in draw')
+    backToForeground()
+    await new Promise((r) => setTimeout(r, 50))
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  test('hero prefers the newest story that has a photo', async () => {
+    const noPhotoFirst: Article[] = [
+      { ...articles[2], id: 'n', title: 'Newest but no photo', published: '2026-11-21T12:00:00Z' },
+      { ...articles[0], id: 'p', title: 'Older with photo', published: '2026-11-21T08:00:00Z' },
+    ]
+    stubFeed(true, noPhotoFirst)
+    const { container } = render(<App />)
+    await screen.findByText('Older with photo')
+    expect(container.querySelector('.hero h2')?.textContent).toBe('Older with photo')
   })
 
   test('fetch failure with no cache shows a connect message', async () => {
